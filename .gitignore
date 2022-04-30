@@ -1,1 +1,2 @@
-shell/
+shell/*
+!shell/admin-shell-task-template.xml
