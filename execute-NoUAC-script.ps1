@@ -67,13 +67,13 @@ if (-NOT (Get-ScheduledTask | Where-Object -Property TaskName -Match $scheduledT
         # a redirection can be specified.
         $passThruArgs = '-command', '&',`
             'SCHTASKS', '/CREATE', '/XML',"`"$PSScriptRoot\shell\admin-shell-task.xml`"", '/TN', "`"$scheduledTaskName`"",`
-            '*>', "`"$PSScriptRoot\SHElevate_out.txt`""
+            '*>', "`"$PSScriptRoot\shell\SHElevate_out.txt`""
 
         Start-Process pwsh -Wait -Verb RunAs -ArgumentList $passThruArgs
 
         # Retrieve the captured output streams here:
-        Get-Content "$PSScriptRoot\SHElevate_out.txt"
-        Remove-Item "$PSScriptRoot\SHElevate_out.txt"
+        Get-Content "$PSScriptRoot\shell\SHElevate_out.txt"
+        Remove-Item "$PSScriptRoot\shell\SHElevate_out.txt"
 
         # finally execute the injected code that performs the elevated command
         # using the SHElevate we just added

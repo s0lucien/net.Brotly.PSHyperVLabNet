@@ -21,5 +21,4 @@ else {
     Write-Host "Code is running as administrator - deleting the scheduled task..." -ForegroundColor Green
     SCHTASKS /DELETE /F /TN $scheduledTaskName
 }
-
-Write-Host "Done."
+Remove-Item -Path "$PSScriptRoot\shell\*" -Exclude ".gitkeep"
