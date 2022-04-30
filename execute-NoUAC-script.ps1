@@ -14,7 +14,7 @@ $content = Get-Content -path .\shell\admin-shell.ps1 -Raw
 $new_content = $content -replace '#\{START_ARBITRARY_ELEVATED_SECTION\}#((.|\n)*)#\{END_ARBITRARY_ELEVATED_SECTION\}#',`
                     "#{START_ARBITRARY_ELEVATED_SECTION}#$scriptBlockString#{END_ARBITRARY_ELEVATED_SECTION}#"
 
-$new_content | Out-File "$PSScriptRoot\shell\admin-shell.ps1" -Force
+$new_content | Out-File "$PSScriptRoot\shell\admin-shell.ps1" -Force -NoNewline
 $task = Get-ScheduledTask | Where-Object -Property TaskName -Match $scheduledTaskName
 $task | Start-ScheduledTask          
 
@@ -36,7 +36,7 @@ if ($timer.Elapsed.TotalSeconds -ge $timeout){
     $task | Stop-ScheduledTask
 }
 
-$log = Get-Content "$PSScriptRoot\shell\admin-shell-output.log"
+$log = Get-Content "$PSScriptRoot\shell\admin-shell-output.log" -Raw
 Write-Host @"
 ===========Log from task===========
 $log
