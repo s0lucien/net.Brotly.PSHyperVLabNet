@@ -1,4 +1,4 @@
-$OutputLogPath="C:\Users\lti\code\net.Brotly.PSHyperVLabNet\admin-shell-output.log"
+$OutputLogPath="$PSScriptRoot\admin-shell-output.log"
 $ErrorActionPreference="SilentlyContinue"
 Stop-Transcript | out-null
 $ErrorActionPreference = "Continue"
