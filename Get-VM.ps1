@@ -10,3 +10,5 @@ function PSHyperVLabNet\Get-VM {
     $VMs = Import-Csv -Path "$PSScriptRoot\shell\VMs.csv"
     $VMs
 }
+
+#$VMs = PSHyperVLabNet\Get-VM

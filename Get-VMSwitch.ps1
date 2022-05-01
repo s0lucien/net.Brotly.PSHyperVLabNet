@@ -10,3 +10,5 @@ function PSHyperVLabNet\Get-VMSwitch {
     $VMSwitches = Import-Csv -Path "$PSScriptRoot\shell\VMSwitches.csv"
     $VMSwitches
 }
+
+#$VMSwitches = PSHyperVLabNet\Get-VMSwitch
