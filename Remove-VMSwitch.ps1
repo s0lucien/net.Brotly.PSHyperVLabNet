@@ -6,9 +6,9 @@ $RemoveVMSwitch_scriptBlockToInject = {
 }
 
 function PSHyperVLabNet\Remove-VMSwitch ($name){
-    $codeToInject = $RemoveVMSwitch_ScriptBlockToInject.ToString() `
+    $scriptBlockToInject = $RemoveVMSwitch_ScriptBlockToInject.ToString() `
         -replace '\$RemoveVMSwitch_Name', "`"$name`""
-    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $codeToInject
+    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $scriptBlockToInject
     $RemoveVMSwitch_out = Get-Content "$PSScriptRoot\shell\Remove-VMSwitch.PSSerialized"
     $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($RemoveVMSwitch_out)
     $SHElevate?

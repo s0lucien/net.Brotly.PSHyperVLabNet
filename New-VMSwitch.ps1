@@ -6,10 +6,10 @@ $NewVMSwitch_scriptBlockToInject = {
 }
 
 function PSHyperVLabNet\New-VMSwitch ($name, $type){
-    $codeToInject = $NewVMSwitch_ScriptBlockToInject.ToString() `
+    $scriptBlockToInject = $NewVMSwitch_ScriptBlockToInject.ToString() `
         -replace '\$NewVMSwitch_Name', "`"$name`"" `
         -replace '\$NewVMSwitch_SwitchType', $type
-    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $codeToInject
+    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $scriptBlockToInject
     $NewVMSwitch_out = Get-Content "$PSScriptRoot\shell\New-VMSwitch.PSSerialized"
     $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($NewVMSwitch_out)
     $SHElevate?

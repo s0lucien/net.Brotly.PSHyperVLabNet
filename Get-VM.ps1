@@ -1,5 +1,5 @@
 
-$GetVM_codeToInject = {
+$GetVM_scriptBlockToInject = {
     $VMs = Get-VM -Verbose
     $ser = [System.Management.Automation.PSSerializer]::Serialize($VMs)
     $ser | Out-File "$PSScriptRoot\VMs.PSSerialized"
@@ -7,7 +7,7 @@ $GetVM_codeToInject = {
 }
 
 function PSHyperVLabNet\Get-VM {
-    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $GetVM_codeToInject.ToString()
+    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $GetVM_scriptBlockToInject.ToString()
     $VMs_out = Get-Content "$PSScriptRoot\shell\VMs.PSSerialized"
     $VMs =[System.Management.Automation.PSSerializer]::Deserialize($VMs_out)
     $VMs
