@@ -27,14 +27,14 @@ $codeToExecute =
 
     while (((Get-ScheduledTask -TaskName $scheduledTaskName).State -ne  'Ready') -and  ($timer.Elapsed.TotalSeconds -lt $timeout)) {    
 
-    Write-Verbose  -Message "Waiting on scheduled task..."
+    Write-Host  -Message "Waiting on scheduled task..."
 
     Start-Sleep -Seconds 1
 
     }
 
     $timer.Stop()
-    Write-Verbose  -Message "We waited [$($timer.Elapsed.TotalSeconds)] seconds on the task '$scheduledTaskName'."
+    Write-Host  -Message "We waited [$($timer.Elapsed.TotalSeconds)] seconds on the task '$scheduledTaskName'."
 
     if ($timer.Elapsed.TotalSeconds -ge $timeout){
         Write-Host "Timed out after $timeout seconds, forcefully terminating ..." 

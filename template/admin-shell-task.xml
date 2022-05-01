@@ -34,7 +34,7 @@
   <Actions Context="Author">
     <Exec>
       <Command>pwsh</Command>
-      <Arguments>-WindowStyle Hidden -NonInteractive -File #{PSScriptRoot}#shell\admin-shell.ps1</Arguments>
+      <Arguments>-WindowStyle Hidden -NonInteractive -File #{PSScriptRoot}#\shell\admin-shell.ps1</Arguments>
       <WorkingDirectory>#{PSScriptRoot}#</WorkingDirectory>
     </Exec>
   </Actions>
