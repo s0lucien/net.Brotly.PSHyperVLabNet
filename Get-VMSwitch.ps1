@@ -6,7 +6,7 @@ $GetVMSwitch_codeToInject = {
 }
 
 function PSHyperVLabNet\Get-VMSwitch {
-    & $PSScriptRoot\execute-NoUAC-shell.ps1 -timeout 2 -codeStringToInject $GetVMSwitch_codeToInject.ToString()
+    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $GetVMSwitch_codeToInject.ToString()
     $VMSwitches = Import-Csv -Path "$PSScriptRoot\shell\VMSwitches.csv"
     $VMSwitches
 }
