@@ -1,6 +1,6 @@
 
 $NewVMSwitch_scriptBlockToInject = {
-    New-VMSwitch -Name $NewVMSwitch_Name -SwitchType $NewVMSwitch_SwitchType
+    New-VMSwitch -Name $NewVMSwitch_Name -SwitchType $NewVMSwitch_SwitchType -Verbose
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
     $ser | Out-File "$PSScriptRoot\New-VMSwitch.PSSerialized"
 }
@@ -15,4 +15,6 @@ function PSHyperVLabNet\New-VMSwitch ($name, $type){
     $SHElevate?
 }
 
-#PSHyperVLabNet\New-VMSwitch -name "DEMO PRIVATE" -type "Private"
+# PSHyperVLabNet\New-VMSwitch -name "DEMO PRIVATE" -type "Private"
+# PSHyperVLabNet\New-VMSwitch -name "DEMO INTERNAL" -type "Internal"
+

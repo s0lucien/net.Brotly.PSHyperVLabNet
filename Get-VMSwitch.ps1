@@ -1,6 +1,6 @@
 
 $GetVMSwitch_codeToInject = {
-    $VMSwitches = Get-VMSwitch
+    $VMSwitches = Get-VMSwitch -Verbose
     $VMSwitches |  Export-Csv "$PSScriptRoot\VMSwitches.csv" -Verbose
     $VMSwitches
 }
@@ -11,4 +11,4 @@ function PSHyperVLabNet\Get-VMSwitch {
     $VMSwitches
 }
 
-#$VMSwitches = PSHyperVLabNet\Get-VMSwitch
+# $VMSwitches = PSHyperVLabNet\Get-VMSwitch

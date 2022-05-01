@@ -1,6 +1,6 @@
 
 $GetVM_codeToInject = {
-    $VMs = Get-VM
+    $VMs = Get-VM -Verbose
     $VMs |  Export-Csv "$PSScriptRoot\VMs.csv" -Verbose
     $VMs
 }
@@ -11,4 +11,4 @@ function PSHyperVLabNet\Get-VM {
     $VMs
 }
 
-#$VMs = PSHyperVLabNet\Get-VM
+# $VMs = PSHyperVLabNet\Get-VM
