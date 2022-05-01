@@ -1,4 +1,4 @@
-function Get-MACAddressFromString ($inputString){
+function PSHyperVLabNet\Get-MACAddressFromString ($inputString){
     $stringAsStream = [System.IO.MemoryStream]::new()
     $writer = [System.IO.StreamWriter]::new($stringAsStream)
     $writer.write($inputString)
@@ -9,4 +9,4 @@ function Get-MACAddressFromString ($inputString){
     "00$MAC10" # and 00 prefix to make it valid
 }
 
-# Get-MACAddressFromString "BrotlyNet_host"
+# PSHyperVLabNet\Get-MACAddressFromString "BrotlyNet_host"
