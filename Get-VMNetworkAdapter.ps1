@@ -1,7 +1,8 @@
 
 $GetVMNetworkAdapter_codeToInject = {
     $VMNetworkAdapters = Get-VMNetworkAdapter -VMName $vm_name -Verbose
-    $VMNetworkAdapters |  Export-Csv "$PSScriptRoot\VMNetworkAdapters.csv" -Verbose
+    $ser = [System.Management.Automation.PSSerializer]::Serialize($VMNetworkAdapters)
+    $ser | Out-File "$PSScriptRoot\Get-VMNetworkAdapter.PSSerialized"
     $VMNetworkAdapters
 }
 
@@ -10,7 +11,8 @@ function PSHyperVLabNet\Get-VMNetworkAdapter($VMName) {
         -replace '\$vm_name', "`"$VMName`"" `
   
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $codeToInject.ToString()
-    $VMNetworkAdapters = Import-Csv -Path "$PSScriptRoot\shell\VMNetworkAdapters.csv"
+    $VMNetworkAdapters_out = Get-Content "$PSScriptRoot\shell\Get-VMNetworkAdapter.PSSerialized"
+    $VMNetworkAdapters =[System.Management.Automation.PSSerializer]::Deserialize($VMNetworkAdapters_out)
     $VMNetworkAdapters
 }
 
