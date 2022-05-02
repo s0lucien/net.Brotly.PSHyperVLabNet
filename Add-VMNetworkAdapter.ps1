@@ -13,7 +13,7 @@ $AddVMNetworkAdapter_scriptBlockToInject = {
     else{
         if($VM.State -ne "Off"){
             Write-Host "$VMName is not off. Stopping the VM in order to allow adding vNICs ..."
-            $VM | Stop-VM 
+            $VM | Stop-VM -Force 
         }
         $VM | Add-VMNetworkAdapter -StaticMacAddress $MacAddress
         if($?){
@@ -40,6 +40,4 @@ function PSHyperVLabNet\Add-VMNetworkAdapter ($VMName, $SwitchName){
     $SHElevate?
 }
 
-PSHyperVLabNet\Add-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
-# PSHyperVLabNet\New-VMSwitch -name "DEMO INTERNAL" -type "Internal"
-
+# PSHyperVLabNet\Add-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
