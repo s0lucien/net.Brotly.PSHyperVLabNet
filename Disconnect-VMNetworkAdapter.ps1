@@ -35,4 +35,4 @@ function PSHyperVLabNet\Disconnect-VMNetworkAdapter ($VMName, $SwitchName){
     $SHElevate?
 }
 
-PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+# PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
