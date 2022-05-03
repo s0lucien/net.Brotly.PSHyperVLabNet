@@ -7,18 +7,18 @@
 
 $InstallInternalSwitchHostStaticIp_scriptBlockToInject = {
     # unbox variables
-    $NetPrefix= $net_prefix
+    $SwitchName= $switch_name
     $HostIP = $host_ip
-    Write-Output "Setting IP to $HostIP for 'vEthernet ($NetPrefix`_Internal)' ..."
-    Get-NetIPAddress -InterfaceIndex (Get-NetAdapter -Name "vEthernet ($NetPrefix`_Internal)").ifIndex | Remove-NetIPAddress -confirm:$false
-    New-NetIPAddress -InterfaceAlias "vEthernet ($NetPrefix`_Internal)" -IPAddress $HostIP -PrefixLength 24
+    Write-Output "Setting IP to $HostIP for 'vEthernet ($SwitchName)' ..."
+    Get-NetIPAddress -InterfaceIndex (Get-NetAdapter -Name "vEthernet ($SwitchName)").ifIndex | Remove-NetIPAddress -confirm:$false
+    New-NetIPAddress -InterfaceAlias "vEthernet ($SwitchName)" -IPAddress $HostIP -PrefixLength 24
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
     $ser | Out-File "$(Get-Location)\Install-InternalSwitchHostStaticIp.PSSerialized"
 }
 
-function PSHyperVLabNet\Install-InternalSwitchHostStaticIP($NetPrefix = "BrotlyNet", $HostIP= "10.10.80.57"){
+function PSHyperVLabNet\Install-InternalSwitchHostStaticIP($SwitchName, $HostIP){
     $scriptBlockToInject = $InstallInternalSwitchHostStaticIp_scriptBlockToInject.ToString() `
-        -replace '\$net_prefix', "`"$NetPrefix`"" `
+        -replace '\$switch_name', "`"$SwitchName`"" `
         -replace '\$host_ip', "`"$HostIP`""
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
@@ -28,16 +28,5 @@ function PSHyperVLabNet\Install-InternalSwitchHostStaticIP($NetPrefix = "BrotlyN
     $SHElevate?
 }
 
-function PSHyperVLabNet\Uninstall-InternalSwitchHostIP ($NetPrefix){
-    Get-NetIPAddress -InterfaceIndex (Get-NetAdapter -Name "vEthernet ($($NetPrefix)_Internal)").ifIndex | Remove-NetIPAddress -confirm:$false
-}
-
-function PSHyperVLabNet\Install-InternalSwitchHostIP ($NetPrefix , $HostIP){
-    Write-Output "Setting IP to $ip for 'vEthernet ($($NetPrefix)_Internal)' ..."
-    Remove-InternalSwitchHostIP -NetPrefix $NetPrefix
-    New-NetIPAddress -InterfaceAlias "vEthernet ($($NetPrefix)_Internal)" -IPAddress  -PrefixLength 24
-    
-}
-
-# PSHyperVLabNet\Install-InternalSwitchHostStaticIP -NetPrefix "TEST INTERNAL" -hostIP "10.10.80.58"
+# PSHyperVLabNet\Install-InternalSwitchHostStaticIP -SwitchName "TEST INTERNAL" -HostIP "10.10.80.58"
 

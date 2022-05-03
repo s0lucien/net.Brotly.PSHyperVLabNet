@@ -4,16 +4,16 @@
 
 $UninstallInternalSwitchHostStaticIp_scriptBlockToInject = {
     # unbox variable
-    $NetPrefix= $net_prefix
-    Write-Output "Removing static IP for 'vEthernet ($NetPrefix`_Internal)' ..."
-    Get-NetIPAddress -InterfaceIndex (Get-NetAdapter -Name "vEthernet ($NetPrefix`_Internal)").ifIndex | Remove-NetIPAddress -confirm:$false
+    $SwitchName= $switch_name
+    Write-Output "Removing static IP for 'vEthernet ($SwitchName)' ..."
+    Get-NetIPAddress -InterfaceIndex (Get-NetAdapter -Name "vEthernet ($SwitchName)").ifIndex | Remove-NetIPAddress -confirm:$false
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
     $ser | Out-File "$(Get-Location)\Uninstall-InternalSwitchHostStaticIp.PSSerialized"
 }
 
-function PSHyperVLabNet\Uninstall-InternalSwitchHostStaticIP($NetPrefix = "BrotlyNet"){
+function PSHyperVLabNet\Uninstall-InternalSwitchHostStaticIP($SwitchName ){
     $scriptBlockToInject = $UninstallInternalSwitchHostStaticIp_scriptBlockToInject.ToString() `
-        -replace '\$net_prefix', "`"$NetPrefix`""
+        -replace '\$switch_name', "`"$SwitchName`""
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     Write-Host "Executed. Retrieving result"
@@ -23,4 +23,4 @@ function PSHyperVLabNet\Uninstall-InternalSwitchHostStaticIP($NetPrefix = "Brotl
 }
 
 
-# PSHyperVLabNet\Uninstall-InternalSwitchHostStaticIP -NetPrefix "TEST INTERNAL"
+# PSHyperVLabNet\Uninstall-InternalSwitchHostStaticIP SwitchName "TEST INTERNAL"
