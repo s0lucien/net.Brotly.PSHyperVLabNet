@@ -1,3 +1,6 @@
+. .\Encode-Text-b64.ps1
+. .\Get-MACAddressFromString.ps1
+
 $ConnectVMNetworkAdapter_scriptBlockToInject = {
     #unbox the variables
     $VMName = $vm_name
@@ -5,21 +8,10 @@ $ConnectVMNetworkAdapter_scriptBlockToInject = {
     $SwitchName = $switch_name
     
     $VM = Get-VM -VMName $VMName
-    $initial_VM_state = $VM.State
     $existent_macs = ($VM | Get-VMNetworkAdapter ).MacAddress
     if($existent_macs -contains $MacAddress){
         Write-Host "A Network Interface with MAC address $MacAddress exists for VM $VMName. Connecting vSwitch $SwitchName to it ..."  
-        $NICs = $VM | Get-VMNetworkAdapter
-        $NICs_to_connect_switch_to = @()
-        foreach ($n in $NICs){
-            if ($n.MacAddress -eq $MacAddress){
-                $NICs_to_connect_switch_to += $n
-            }
-        }
-        Write-Host "Connecting $NICs_to_connect_switch_to -> $SwitchName"
-        foreach ($n in $NICs_to_connect_switch_to){
-            $n | Connect-VMNetworkAdapter -SwitchName $SwitchName
-        } 
+        $NICs = $VM | Get-VMNetworkAdapter | Where-Object {$_.MacAddress -eq $MacAddress} | Connect-VMNetworkAdapter -SwitchName $SwitchName
         if($?){
             Write-Host "Succesfully connected MAC address $MacAddress -> $SwitchName"
         }
@@ -27,7 +19,7 @@ $ConnectVMNetworkAdapter_scriptBlockToInject = {
         Write-Error "No NIC with MacAddress $MacAddress exists. Make sure that NICs exist before connecting switch to them. Connection unsuccesful"
     }
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
-    $ser | Out-File "$PSScriptRoot\Connect-VMNetworkAdapter.PSSerialized"
+    $ser | Out-File "$(Get-Location)\Connect-VMNetworkAdapter.PSSerialized"
     Write-Host "Done."
 }
 
@@ -37,7 +29,8 @@ function PSHyperVLabNet\Connect-VMNetworkAdapter ($VMName, $SwitchName){
         -replace '\$switch_name', "`"$SwitchName`"" `
         -replace '\$vm_name', "`"$VMName`"" `
         -replace '\$mac_address', "`"$MacAddressToInject`""
-    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $scriptBlockToInject
+    $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject.ToString()
+    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     $ConnectVMNetworkAdapter_out = Get-Content "$PSScriptRoot\shell\Connect-VMNetworkAdapter.PSSerialized"
     $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($ConnectVMNetworkAdapter_out)
     $SHElevate?
