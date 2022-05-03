@@ -3,8 +3,9 @@
 $NewVMSwitch_scriptBlockToInject = {
     $SwitchName = $switch_name
     $SwitchType = $switch_type
-   
-    New-VMSwitch -Name "$SwitchName" -SwitchType $SwitchType -Verbose
+    if(-not (Get-VMSwitch -Name "$SwitchName" -ErrorAction SilentlyContinue)){
+        New-VMSwitch -Name "$SwitchName" -SwitchType $SwitchType -Verbose
+    }
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
     $ser | Out-File "$(Get-Location)\New-VMSwitch.PSSerialized"
 }
