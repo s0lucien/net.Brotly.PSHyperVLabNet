@@ -11,7 +11,7 @@ $UninstallInternalSwitchHostStaticIp_scriptBlockToInject = {
     $ser | Out-File "$(Get-Location)\Uninstall-InternalSwitch_HostStaticIp.PSSerialized"
 }
 
-function PSHyperVLabNet\Uninstall-InternalSwitchHostStaticIP($SwitchName ){
+function PSHyperVLabNet\Uninstall-InternalSwitch_HostStaticIP($SwitchName ){
     $scriptBlockToInject = $UninstallInternalSwitchHostStaticIp_scriptBlockToInject.ToString() `
         -replace '\$switch_name', "`"$SwitchName`""
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
