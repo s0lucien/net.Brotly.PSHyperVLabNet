@@ -27,7 +27,6 @@ function PSHyperVLabNet\RemoveFromHosts{
     # By Tom Chantler - https://tomssl.com/2019/04/30/a-better-way-to-add-and-remove-windows-hosts-file-entries/
     param([string]$Hostname = "tomssl.local")
     # Remove entry from hosts file. Removes all entries that match the hostname (i.e. both IPv4 and IPv6).
-    #Requires -RunAsAdministrator
     $hostsFilePath = "$($Env:WinDir)\system32\Drivers\etc\hosts"
     $hostsFile = Get-Content $hostsFilePath
     Write-Host "About to remove $Hostname from hosts file" -ForegroundColor Gray
@@ -48,7 +47,6 @@ function PSHyperVLabNet\UpdateMultipleHostsFiles{
     param([string[]]$ServerList,
     [int]$TimeOut=5)
     # Copy local hosts files to multiple computers, overwriting the existing hosts files. Backs up existing hosts file to hosts.bak
-    #Requires -RunAsAdministrator
     $numberOfServers = $ServerList.Length
 
     If ($PSCmdlet.ShouldProcess($null)){
