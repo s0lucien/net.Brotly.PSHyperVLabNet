@@ -1,4 +1,4 @@
-. .\Encode-ScriptBlock-b64.ps1
+. .\Encode-Text-b64.ps1
 
 $GetVM_scriptBlockToInject = {
     $VMs = Get-VM -Verbose
@@ -9,7 +9,7 @@ $GetVM_scriptBlockToInject = {
 }
 
 function PSHyperVLabNet\Get-VM {
-    $encodedCommand = Encode-ScriptBlock-b64 -ScriptBlockToEncode $GetVM_scriptBlockToInject
+    $encodedCommand = Encode-Text-b64 -Text $GetVM_scriptBlockToInject.ToString()
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     Write-Host "Executed. Retrieving result"
     $VMs_out = Get-Content "$PSScriptRoot\shell\VMs.PSSerialized"
