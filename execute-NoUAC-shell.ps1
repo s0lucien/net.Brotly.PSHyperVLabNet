@@ -8,7 +8,7 @@ $codeToExecute =
 {
     $content = Get-Content -path "$PSScriptRoot\template\admin-shell.ps1" -Raw
     $new_content = $content -replace '#\{START_ARBITRARY_ELEVATED_SECTION\}#((.|\n)*)#\{END_ARBITRARY_ELEVATED_SECTION\}#',`
-                        "#{START_ARBITRARY_ELEVATED_SECTION}#$codeStringToInject#{END_ARBITRARY_ELEVATED_SECTION}#"
+                        "#{START_ARBITRARY_ELEVATED_SECTION}#`n$codeStringToInject`n#{END_ARBITRARY_ELEVATED_SECTION}#"
 
     $new_content | Out-File "$PSScriptRoot\shell\admin-shell.ps1" -Force -NoNewline
     $task = Get-ScheduledTask | Where-Object -Property TaskName -Match $scheduledTaskName
@@ -16,7 +16,7 @@ $codeToExecute =
 
     $timer =  [Diagnostics.Stopwatch]::StartNew()
 
-    while (((Get-ScheduledTask -TaskName $scheduledTaskName).State -ne  'Ready') -and  ($timer.Elapsed.TotalSeconds -lt $timeout)) {    
+    while (((Get-ScheduledTask -TaskName $scheduledTaskName).State -ne  'Ready') -and  ($timer.Elapsed.TotalSeconds -lt $timeoutSec)) {    
 
     Write-Host  -Message "Waiting on scheduled task..."
 
@@ -27,7 +27,7 @@ $codeToExecute =
     $timer.Stop()
     Write-Host  -Message "We waited [$($timer.Elapsed.TotalSeconds)] seconds on the task '$scheduledTaskName'."
 
-    if ($timer.Elapsed.TotalSeconds -ge $timeout){
+    if ($timer.Elapsed.TotalSeconds -ge $timeoutSec){
         Write-Host "Timed out after $timeout seconds, forcefully terminating ..." 
         $task | Stop-ScheduledTask
     }
