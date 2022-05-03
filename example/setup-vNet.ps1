@@ -109,8 +109,7 @@ function Setup-HyperVLabNet ($NetPrefix = "BrotlyNet") {
     $ipAddress = "10.10.80.1"
     $hostName="pf.surf"
     $MacAddressWhereStaticIP = PSHyperVLabNet\Get-MACAddressFromString "$VMName-BrotlyNet_Internal"
-    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP}
-        | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"   
+    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP} | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"   
     PSHyperVLabNet\RemoveFromHosts -Hostname $hostName
     PSHyperVLabNet\AddToHosts -Hostname $hostName -DesiredIp $ipAddress
     
@@ -119,8 +118,7 @@ function Setup-HyperVLabNet ($NetPrefix = "BrotlyNet") {
     $ipAddress = "10.10.80.91"
     $hostName="rpi.surf"
     $MacAddressWhereStaticIP = PSHyperVLabNet\Get-MACAddressFromString "$VMName-BrotlyNet_Internal"
-    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP}
-        | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"
+    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP} | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"
     PSHyperVLabNet\RemoveFromHosts -Hostname $hostName
     PSHyperVLabNet\AddToHosts -Hostname $hostName -DesiredIp $ipAddress
 
@@ -129,8 +127,7 @@ function Setup-HyperVLabNet ($NetPrefix = "BrotlyNet") {
     $ipAddress = "10.10.80.143"
     $hostName="winfra.surf"
     $MacAddressWhereStaticIP = PSHyperVLabNet\Get-MACAddressFromString "$VMName-BrotlyNet_Internal"
-    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP}
-        | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"
+    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP} | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"
     PSHyperVLabNet\RemoveFromHosts -Hostname $hostName
     PSHyperVLabNet\AddToHosts -Hostname $hostName -DesiredIp $ipAddress
     
@@ -139,8 +136,7 @@ function Setup-HyperVLabNet ($NetPrefix = "BrotlyNet") {
     $ipAddress = "10.10.80.141"
     $hostName="linfra.surf"
     $MacAddressWhereStaticIP = PSHyperVLabNet\Get-MACAddressFromString "$VMName-BrotlyNet_Internal"
-    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP}
-        | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"
+    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP} | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"
     PSHyperVLabNet\RemoveFromHosts -Hostname $hostName
     PSHyperVLabNet\AddToHosts -Hostname $hostName -DesiredIp $ipAddress
     
@@ -149,8 +145,7 @@ function Setup-HyperVLabNet ($NetPrefix = "BrotlyNet") {
     $ipAddress = "10.10.80.87"
     $hostName="hv.surf"
     $MacAddressWhereStaticIP = PSHyperVLabNet\Get-MACAddressFromString "$VMName-BrotlyNet_Internal"
-    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP}
-        | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"
+    Get-VM -VMName $VMName | Get-VMNetworkAdapter  | Where-Object {$_.MacAddress -eq $MacAddressWhereStaticIP} | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress $ipAddress -Subnet "255.255.255.0"
     PSHyperVLabNet\RemoveFromHosts -Hostname $hostName
     PSHyperVLabNet\AddToHosts -Hostname $hostName -DesiredIp $ipAddress
     
