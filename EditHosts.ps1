@@ -5,7 +5,6 @@ function PSHyperVLabNet\AddToHosts{
         ,[string]$Hostname = "tomssl.local"
         ,[bool]$CheckHostnameOnly = $false)
     # Adds entry to the hosts file.
-    #Requires -RunAsAdministrator
     $hostsFilePath = "$($Env:WinDir)\system32\Drivers\etc\hosts"
     $hostsFile = Get-Content $hostsFilePath
 
