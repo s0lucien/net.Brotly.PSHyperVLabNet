@@ -5,6 +5,7 @@ $ErrorActionPreference = "Continue"
 Remove-item $OutputLogPath #remove old execution and start new transcript
 Start-Transcript -path $OutputLogPath -append
 
+Write-Host "Executing shell in $PSScriptRoot ..."
 #{START_ARBITRARY_ELEVATED_SECTION}#
     Write-Host "This is a no-op executed in an elevated shell"
 #{END_ARBITRARY_ELEVATED_SECTION}#
