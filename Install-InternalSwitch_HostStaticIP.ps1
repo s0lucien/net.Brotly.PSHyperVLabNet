@@ -13,20 +13,20 @@ $InstallInternalSwitchHostStaticIp_scriptBlockToInject = {
     Get-NetIPAddress -InterfaceIndex (Get-NetAdapter -Name "vEthernet ($SwitchName)").ifIndex | Remove-NetIPAddress -confirm:$false
     New-NetIPAddress -InterfaceAlias "vEthernet ($SwitchName)" -IPAddress $HostIP -PrefixLength 24
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
-    $ser | Out-File "$(Get-Location)\Install-InternalSwitchHostStaticIp.PSSerialized"
+    $ser | Out-File "$(Get-Location)\Install-InternalSwitch_HostStaticIp.PSSerialized"
 }
 
-function PSHyperVLabNet\Install-InternalSwitchHostStaticIP($SwitchName, $HostIP){
+function PSHyperVLabNet\Install-InternalSwitch_HostStaticIP($SwitchName, $HostIP){
     $scriptBlockToInject = $InstallInternalSwitchHostStaticIp_scriptBlockToInject.ToString() `
         -replace '\$switch_name', "`"$SwitchName`"" `
         -replace '\$host_ip', "`"$HostIP`""
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     Write-Host "Executed. Retrieving result"
-    $InstallInternalSwitchHostStaticIp_out = Get-Content "$PSScriptRoot\shell\Install-InternalSwitchHostStaticIp.PSSerialized"
+    $InstallInternalSwitchHostStaticIp_out = Get-Content "$PSScriptRoot\shell\Install-InternalSwitch_HostStaticIp.PSSerialized"
     $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($InstallInternalSwitchHostStaticIp_out)
     $SHElevate?
 }
 
-# PSHyperVLabNet\Install-InternalSwitchHostStaticIP -SwitchName "TEST INTERNAL" -HostIP "10.10.80.58"
+# PSHyperVLabNet\Install-InternalSwitch_HostStaticIP -SwitchName "TEST INTERNAL" -HostIP "10.10.80.58"
 
