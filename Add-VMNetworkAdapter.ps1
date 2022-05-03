@@ -1,3 +1,5 @@
+. .\Encode-Text-b64.ps1
+. .\Get-MACAddressFromString.ps1
 
 $AddVMNetworkAdapter_scriptBlockToInject = {
     #unbox the variables
@@ -25,7 +27,7 @@ $AddVMNetworkAdapter_scriptBlockToInject = {
         }
     }
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
-    $ser | Out-File "$PSScriptRoot\Add-VMNetworkAdapter.PSSerialized"
+    $ser | Out-File "$(Get-Location)\Add-VMNetworkAdapter.PSSerialized"
     Write-Host "Done."
 }
 
@@ -34,7 +36,9 @@ function PSHyperVLabNet\Add-VMNetworkAdapter ($VMName, $SwitchName){
     $scriptBlockToInject = $AddVMNetworkAdapter_scriptBlockToInject.ToString() `
         -replace '\$vm_name', "`"$VMName`"" `
         -replace '\$mac_address', "`"$MacAddressToInject`""
-    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $scriptBlockToInject
+    $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
+    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
+    Write-Host "Executed. Retrieving result"
     $AddVMNetworkAdapter_out = Get-Content "$PSScriptRoot\shell\Add-VMNetworkAdapter.PSSerialized"
     $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($AddVMNetworkAdapter_out)
     $SHElevate?
