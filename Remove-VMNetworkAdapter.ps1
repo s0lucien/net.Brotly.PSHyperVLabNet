@@ -1,3 +1,6 @@
+. .\Encode-Text-b64.ps1
+. .\Get-MACAddressFromString.ps1
+
 $RemoveVMNetworkAdapter_scriptBlockToInject = {
     #unbox the variables
     $VMName = $vm_name
@@ -12,17 +15,7 @@ $RemoveVMNetworkAdapter_scriptBlockToInject = {
             Write-Host "$VMName is not off. Stopping the VM in order to allow removal of vNICs ..."
             $VM | Stop-VM -Force
         }
-        $NICs = $VM | Get-VMNetworkAdapter
-        $NICs_to_delete = @()
-        foreach ($n in $NICs){
-            if ($n.MacAddress -eq $MacAddress){
-                $NICs_to_delete += $n
-            }
-        }
-        Write-Host "Going to remove NICs: $NICs_to_delete"
-        foreach ($n in $NICs_to_delete){
-            $n | Remove-VMNetworkAdapter
-        } 
+        $VM | Get-VMNetworkAdapter | Where-Object {$_.MacAddress -eq $MacAddress} | Remove-VMNetworkAdapter
         if($?){
             Write-Host "Succesfully removed all Network Interfaces with MAC address $MacAddress"
         }
@@ -34,7 +27,7 @@ $RemoveVMNetworkAdapter_scriptBlockToInject = {
         Write-Host "No NIC with MacAddress $MacAddress exists. No changes will be made."
     }
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
-    $ser | Out-File "$PSScriptRoot\Remove-VMNetworkAdapter.PSSerialized"
+    $ser | Out-File "$(Get-Location)\Remove-VMNetworkAdapter.PSSerialized"
     Write-Host "Done."
 }
 
@@ -43,7 +36,8 @@ function PSHyperVLabNet\Remove-VMNetworkAdapter ($VMName, $SwitchName){
     $scriptBlockToInject = $RemoveVMNetworkAdapter_scriptBlockToInject.ToString() `
         -replace '\$vm_name', "`"$VMName`"" `
         -replace '\$mac_address', "`"$MacAddressToInject`""
-    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject $scriptBlockToInject
+    $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
+    & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     $RemoveVMNetworkAdapter_out = Get-Content "$PSScriptRoot\shell\Remove-VMNetworkAdapter.PSSerialized"
     $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($RemoveVMNetworkAdapter_out)
     $SHElevate?
