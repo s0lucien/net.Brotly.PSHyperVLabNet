@@ -24,11 +24,11 @@ $ConnectVMNetworkAdapter_scriptBlockToInject = {
 }
 
 function PSHyperVLabNet\Connect-VMNetworkAdapter ($VMName, $SwitchName){
-    $MacAddressToInject = PSHyperVLabNet\Get-MACAddressFromString "$VMName-$SwitchName"
+    $MacAddressToSearchFor = PSHyperVLabNet\Get-MACAddressFromString "$VMName-$SwitchName"
     $scriptBlockToInject = $ConnectVMNetworkAdapter_scriptBlockToInject.ToString() `
         -replace '\$switch_name', "`"$SwitchName`"" `
         -replace '\$vm_name', "`"$VMName`"" `
-        -replace '\$mac_address', "`"$MacAddressToInject`""
+        -replace '\$mac_address', "`"$MacAddressToSearchFor`""
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject.ToString()
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     $ConnectVMNetworkAdapter_out = Get-Content "$PSScriptRoot\shell\Connect-VMNetworkAdapter.PSSerialized"
@@ -36,4 +36,4 @@ function PSHyperVLabNet\Connect-VMNetworkAdapter ($VMName, $SwitchName){
     $SHElevate?
 }
 
-# PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+# PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "WinSrv2022" -SwitchName "BrotlyNet_host"

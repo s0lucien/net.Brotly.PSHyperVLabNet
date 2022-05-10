@@ -31,6 +31,7 @@ $AddVMNetworkAdapter_scriptBlockToInject = {
     Write-Host "Done."
 }
 
+# adds a new interface with a unique MAC address obtained from the $VMName-$SwitchName arguments
 function PSHyperVLabNet\Add-VMNetworkAdapter ($VMName, $SwitchName){
     $MacAddressToInject = PSHyperVLabNet\Get-MACAddressFromString "$VMName-$SwitchName"
     $scriptBlockToInject = $AddVMNetworkAdapter_scriptBlockToInject.ToString() `
@@ -45,3 +46,4 @@ function PSHyperVLabNet\Add-VMNetworkAdapter ($VMName, $SwitchName){
 }
 
 # PSHyperVLabNet\Add-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+# PSHyperVLabNet\Add-VMNetworkAdapter -VMName "WinSrv2022" -SwitchName "BrotlyNet_host"

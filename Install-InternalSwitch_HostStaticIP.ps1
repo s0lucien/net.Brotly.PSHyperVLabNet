@@ -28,5 +28,5 @@ function PSHyperVLabNet\Install-InternalSwitch_HostStaticIP($SwitchName, $HostIP
     $SHElevate?
 }
 
-# PSHyperVLabNet\Install-InternalSwitch_HostStaticIP -SwitchName "TEST INTERNAL" -HostIP "10.10.80.58"
+# PSHyperVLabNet\Install-InternalSwitch_HostStaticIP -SwitchName "BrotlyNet_host" -HostIP "10.10.80.57"
 
