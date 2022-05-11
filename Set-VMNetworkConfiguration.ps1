@@ -1,4 +1,7 @@
 # https://stackoverflow.com/questions/60919642/how-to-assign-ip-to-hyper-v-vm-with-hosts-powershell
+
+. .\Get-MACAddressFromString.ps1
+
 Function PSHyperVLabNet\Set-VMNetworkConfiguration {
     [CmdletBinding()]
     Param (
@@ -83,8 +86,8 @@ Function PSHyperVLabNet\Set-VMNetworkConfiguration {
     }
 }
 
-# $if = Get-VM -VMName WinSrv2022 | Get-VMNetworkAdapter                                    
-# $if[0] | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress 10.10.80.143 -Subnet 255.255.255.0 -DNSServer 10.10.80.143 -DefaultGateway 10.10.80.1
+# Get-VM -VMName "WinSrv2022" | Get-VMNetworkAdapter | Where-Object {$_.MacAddress -eq $(PSHyperVLabNet\Get-MACAddressFromString "WinSrv2022-BrotlyNet_host")} `
+# | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress 10.10.80.143 -Subnet 255.255.255.0
 
-# $if = Get-VM -VMName "Ubuntu22.04" | Get-VMNetworkAdapter                                    
-# $if[0] | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress 10.10.80.141 -Subnet 255.255.255.0 -DNSServer 10.10.80.143 -DefaultGateway 10.10.80.1
+# Get-VM -VMName "Ubuntu22.04" | Get-VMNetworkAdapter | Where-Object {$_.MacAddress -eq $(PSHyperVLabNet\Get-MACAddressFromString "Ubuntu22.04-BrotlyNet_host")} `
+# | PSHyperVLabNet\Set-VMNetworkConfiguration -IPAddress 10.10.80.141 -Subnet 255.255.255.0 # -DNSServer 10.10.80.143 -DefaultGateway 10.10.80.1
