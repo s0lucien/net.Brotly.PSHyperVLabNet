@@ -26,7 +26,7 @@ $InstallOpenDHCPHost_scriptBlockToInject = {
 
 function PSHyperVLabNet\Install-OpenDHCP_Host($RuleLocalIP, $OpenDHCPRange){
     Import-Module PsIni
-    $listen_on = @{""=$RuleLocalIP}
+    $listen_on = @{"="=$RuleLocalIP}
     $logging = @{"LogLevel"="All"}
     $range_set = @{"DHCPRange"=$OpenDHCPRange}
 
