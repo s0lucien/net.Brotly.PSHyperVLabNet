@@ -23,4 +23,4 @@ function PSHyperVLabNet\Uninstall-InternalSwitch_HostStaticIP($SwitchName ){
 }
 
 
-# PSHyperVLabNet\Uninstall-InternalSwitch_HostStaticIP SwitchName "TEST INTERNAL"
+# PSHyperVLabNet\Uninstall-InternalSwitch_HostStaticIP -SwitchName "BrotlyNet_host"
