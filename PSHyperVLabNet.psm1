@@ -1,6 +1,6 @@
 Write-Output "Loading the PsHyperVLabNet module" -ForegroundColor DarkGreen
 
-Get-ChildItem *.ps1 -Exclude execute-NoUAC-shell.ps1,remove-NoUAC-shell.ps1 | foreach {. "$($_.FullName)"}
+Get-ChildItem *.ps1 -Exclude execute-NoUAC-shell.ps1,remove-NoUAC-shell.ps1,psakefile.ps1 | foreach {. "$($_.FullName)"}
 
 Export-ModuleMember -Function *
 
