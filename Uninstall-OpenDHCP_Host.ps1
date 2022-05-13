@@ -22,7 +22,7 @@ $UninstallOpenDHCPHost_scriptBlockToInject = {
 
 function PSHyperVLabNet\Uninstall-OpenDHCP_Host{
     
-    Remove-Item "$PSScriptRoot\dhcp\OpenDHCPServer.ini"
+    Remove-Item "$PSScriptRoot\dhcp\OpenDHCPServer.ini" -ErrorAction Continue
     $scriptBlockToInject = $UninstallOpenDHCPHost_scriptBlockToInject.ToString()
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"

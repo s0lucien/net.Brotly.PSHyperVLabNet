@@ -35,22 +35,60 @@ task winfra.surf_up -Description "Configure winfra guest (WinSrv2022)" -depends 
     PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.143" -Hostname "winfra.surf"
 }
 
+
+task winfra.surf_down -Description "Decomission winfra guest (WinSrv2022)" -depends ensure-imported {
+    Write-Host "Will now remove winfra.surf HyperV guest networking ..."
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "WinSrv2022" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "WinSrv2022" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "WinSrv2022" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "WinSrv2022" -SwitchName "BrotlyNet_pf2vm"
+
+    PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "WinSrv2022" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\RemoveFromHosts -Hostname "winfra.surf"
+}
+
 task raspberry.surf_up -Description "Configure raspberry guest (rpi)" -depends ensure-imported {
     Write-Host "Will now configure raspberry.surf HyperV guest networking ..."
     PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_pf2vm"
     PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_pf2vm"
     PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "rpi" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.91"
     PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.91" -Hostname "raspberry.surf"
+}
+
+task raspberry.surf_down -Description "Decomission raspberry guest (rpi)" -depends ensure-imported {
+    Write-Host "Will now remove raspberry.surf HyperV guest networking ..."
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_pf2vm"
+
+    PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "rpi" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\RemoveFromHosts -Hostname "raspberry.surf"
 }
 
 task linfra.surf_up -Description "Configure linfra guest (Ubuntu22.04)" -depends ensure-imported {
     Write-Host "Will now configure linfra.surf HyperV guest networking ..."
     PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_pf2vm"
     PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_pf2vm"
     PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.141"
     PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.141" -Hostname "linfra.surf"
+}
+
+task linfra.surf_down -Description "Decomission linfra guest (Ubuntu22.04)" -depends ensure-imported {
+    Write-Host "Will now remove linfra.surf HyperV guest networking ..."
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_pf2vm"
+
+    PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\RemoveFromHosts -Hostname "linfra.surf"
 }
 
 task pfsense.surf_up -Description "Configure pf guest (pfSense)" -depends ensure-imported {
@@ -60,9 +98,9 @@ task pfsense.surf_up -Description "Configure pf guest (pfSense)" -depends ensure
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
-    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
     PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
+    # PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
     PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "pfSense" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.1"
     PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.1" -Hostname "pfsense.surf"
 }
