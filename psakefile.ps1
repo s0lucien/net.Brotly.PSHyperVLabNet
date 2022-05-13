@@ -26,6 +26,60 @@ task book.surf_down -Description "Removing HyperV host configuration (ltisurfboo
     PSHyperVLabNet\RemoveFromHosts -DesiredIP -Hostname "book.surf"
 }
 
+task winfra.surf_up -Description "Configure winfra guest (WinSrv2022)" -depends ensure-imported {
+    Write-Host "Will now configure winfra.surf HyperV guest networking ..."
+    PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "WinSrv2022" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "WinSrv2022" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "WinSrv2022" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.143"
+    PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.143" -Hostname "winfra.surf"
+}
+
+task raspberry.surf_up -Description "Configure raspberry guest (rpi)" -depends ensure-imported {
+    Write-Host "Will now configure raspberry.surf HyperV guest networking ..."
+    PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "rpi" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "rpi" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.91"
+    PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.91" -Hostname "raspberry.surf"
+}
+
+task linfra.surf_up -Description "Configure linfra guest (Ubuntu22.04)" -depends ensure-imported {
+    Write-Host "Will now configure linfra.surf HyperV guest networking ..."
+    PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.141"
+    PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.141" -Hostname "linfra.surf"
+}
+
+task pfsense.surf_up -Description "Configure pf guest (pfSense)" -depends ensure-imported {
+    Write-Host "Will now configure pfsense.surf HyperV guest networking ..."
+    PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
+    PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_pf2vm" -SwitchType "Private"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "pfSense" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.1"
+    PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.1" -Hostname "pfsense.surf"
+}
+
+task pfsense.surf_down -Description "Decomission pfsense guest (pfSense)" -depends ensure-imported {
+    Write-Host "Will now remove pfsense.surf HyperV guest networking ..."
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
+
+    PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "pfSense" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\RemoveFromHosts -Hostname "pfsense.surf"
+}
+
 task test-cmd -depends ensure-imported {
     PSHyperVLabNet\Uninstall-InternalSwitch_HostFirewall -RuleName "BrotlyNet_host"
 }
