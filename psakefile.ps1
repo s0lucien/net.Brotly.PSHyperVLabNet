@@ -100,7 +100,7 @@ task pfsense.surf_up -Description "Configure pf guest (pfSense)" -depends ensure
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
     PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
-    # PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
     PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "pfSense" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.1"
     PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.1" -Hostname "pfsense.surf"
 }
