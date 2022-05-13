@@ -1,33 +1,32 @@
-$SetMacRestartOpenDHCPServer_scriptBlockToInject = {
+$UnsetMacRestartOpenDHCPServer_scriptBlockToInject = {
     Restart-Service OpenDHCPServer
 
     $ser = [System.Management.Automation.PSSerializer]::Serialize($?)
-    $ser | Out-File "$(Get-Location)\SetMacRestartOpenDHCPServer.PSSerialized"
+    $ser | Out-File "$(Get-Location)\UnsetMacRestartOpenDHCPServer.PSSerialized"
 }
 
-function PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP($VMName, $SwitchName, $IPAddress){
+function PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP($VMName, $SwitchName){
     
     Import-Module PsIni
     $OldINIContent = Get-IniContent "$PSScriptRoot\dhcp\OpenDHCPServer.ini"
 
     $mac = ((PSHyperVLabNet\Get-MACAddressFromString "$VMName-$SwitchName") -split '(.{2})' -ne '') -join ':'
-    Write-Host "MAC address $mac will be assigned IP address $IPAddress"
-    $ip = @{"IP"=$IPAddress}
+    Write-Host "MAC address $mac will be unassigned from OpenDHCP managed addresses"
 
-    $OldINIContent[$mac]=$ip
+    $OldINIContent.remove($mac)
 
     Out-IniFile -InputObject $OldINIContent -Force -FilePath "$PSScriptRoot\dhcp\OpenDHCPServer.ini"
 
-    $scriptBlockToInject = $SetMacRestartOpenDHCPServer_scriptBlockToInject.ToString()
+    $scriptBlockToInject = $UnsetMacRestartOpenDHCPServer_scriptBlockToInject.ToString()
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     Write-Host "Executed. Retrieving result"
-    $RestartOpenDHCPServer_out = Get-Content "$PSScriptRoot\shell\SetMacRestartOpenDHCPServer.PSSerialized"
+    $RestartOpenDHCPServer_out = Get-Content "$PSScriptRoot\shell\UnsetMacRestartOpenDHCPServer.PSSerialized"
     $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($RestartOpenDHCPServer_out)
     $SHElevate?
 }
 
-# PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "rpi" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.91"
+# PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "rpi" -SwitchName "BrotlyNet_host"
 
 
 
