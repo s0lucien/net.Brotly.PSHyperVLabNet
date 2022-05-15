@@ -9,12 +9,14 @@ task ensure-removed -Description "Ensure PSHyperVLabNet (and SHELevate) are not 
 }
 
 task ensure-vswitches -description "Ensure virtual switches necessary to BrotlyNet are created" -depends ensure-imported {
+    PSHyperVLabNet\New-VMSwitch -SwitchName "vagrant_dummy" -SwitchType "Internal"
     PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
     PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_pf2vm" -SwitchType "Private"
 }
 
 task remove-vswitches -description "Remove all switches created for BrotlyNet" `
-    -depends book.surf_down, winfra.surf_down, raspberry.surf_down, linfra.surf_down, hv.surf_down, pfs.surf_down {
+    -depends winfra.surf_down, raspberry.surf_down, linfra.surf_down, hv.surf_down, pfs.surf_down {
+        PSHyperVLabNet\Remove-VMSwitch -name "vagrant_dummy"
         PSHyperVLabNet\Remove-VMSwitch -name "BrotlyNet_host"
         PSHyperVLabNet\Remove-VMSwitch -name "BrotlyNet_pf2vm"
     }
@@ -27,7 +29,7 @@ task book.surf_up -Description "Configure HyperV host (ltisurfbook)" -depends en
     PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.57" -Hostname "book.surf"
 }
 
-task book.surf_down -Description "Removing HyperV host configuration (ltisurfbook)" -depends ensure-imported {
+task book.surf_down -Description "Removing HyperV host configuration (ltisurfbook)" -depends ensure-imported, remove-vswitches {
     Write-Host "Will now remove any HyperV host networking configurations from book.surf. Virtual switches will not be removed ..."
     PSHyperVLabNet\Uninstall-InternalSwitch_HostStaticIP -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\Uninstall-InternalSwitch_HostFirewall -RuleName "BrotlyNet_host"

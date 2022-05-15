@@ -7,15 +7,17 @@ $UnsetMacRestartOpenDHCPServer_scriptBlockToInject = {
 
 function PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP($VMName, $SwitchName){
     
-    Import-Module PsIni
-    $OldINIContent = Get-IniContent "$PSScriptRoot\dhcp\OpenDHCPServer.ini"
+    if(Test-Path "$PSScriptRoot\dhcp\OpenDHCPServer.ini"){
+        Import-Module PsIni
+        $OldINIContent = Get-IniContent "$PSScriptRoot\dhcp\OpenDHCPServer.ini"
 
-    $mac = ((PSHyperVLabNet\Get-MACAddressFromString "$VMName-$SwitchName") -split '(.{2})' -ne '') -join ':'
-    Write-Host "MAC address $mac will be unassigned from OpenDHCP managed addresses"
+        $mac = ((PSHyperVLabNet\Get-MACAddressFromString "$VMName-$SwitchName") -split '(.{2})' -ne '') -join ':'
+        Write-Host "MAC address $mac will be unassigned from OpenDHCP managed addresses"
 
-    $OldINIContent.remove($mac)
+        $OldINIContent.remove($mac)
 
-    Out-IniFile -InputObject $OldINIContent -Force -FilePath "$PSScriptRoot\dhcp\OpenDHCPServer.ini"
+        Out-IniFile -InputObject $OldINIContent -Force -FilePath "$PSScriptRoot\dhcp\OpenDHCPServer.ini"
+    }
 
     $scriptBlockToInject = $UnsetMacRestartOpenDHCPServer_scriptBlockToInject.ToString()
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
