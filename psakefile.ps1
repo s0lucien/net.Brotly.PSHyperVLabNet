@@ -4,20 +4,12 @@ task ensure-imported -Description "re-import PSHyperVLabNet" {
     Import-Module ".\PSHyperVLabNet.psd1"
 }
 
-task ensure-removed -Description "Ensure PSHyperVLabNet (and SHELevate) are not present on the machine" -depends remove-vswitches {
-    Remove-Module PSHyperVLabNet -ErrorAction Continue
-}
 
 task ensure-vswitches -description "Ensure virtual switches necessary to BrotlyNet are created" -depends ensure-imported {
     PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
     PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_pf2vm" -SwitchType "Private"
 }
 
-task remove-vswitches -description "Remove all switches created for BrotlyNet" `
-    -depends winfra.surf_net_down, raspberry.surf_net_down, linfra.surf_net_down, hv.surf_net_down, pfs.surf_net_down {
-        PSHyperVLabNet\Remove-VMSwitch -SwitchName "BrotlyNet_host"
-        PSHyperVLabNet\Remove-VMSwitch -SwitchName "BrotlyNet_pf2vm"
-    }
 
 task book.surf_net_up -Description "Configure HyperV host (ltisurfbook)" -depends ensure-imported, ensure-vswitches {
     Write-Host "Will now configure book.surf HyperV host networking ..."
@@ -34,6 +26,8 @@ task book.surf_net_down -Description "Removing HyperV host configuration (ltisur
     PSHyperVLabNet\Uninstall-OpenDHCP_Host
     PSHyperVLabNet\RemoveFromHosts -DesiredIP -Hostname "book.surf"
 }
+
+### winfra
 
 task winfra.surf_net_up -Description "Configure winfra guest (WinSrv2022)" -depends ensure-imported, ensure-vswitches {
     Write-Host "Will now configure winfra.surf HyperV guest networking ..."
@@ -54,6 +48,8 @@ task winfra.surf_net_down -Description "Decomission winfra guest (WinSrv2022)" -
     PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "WinSrv2022" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\RemoveFromHosts -Hostname "winfra.surf"
 }
+
+### raspberry
 
 task raspberry.surf_net_up -Description "Configure raspberry guest (rpi)" -depends ensure-imported, ensure-vswitches {
     Write-Host "Will now configure raspberry.surf HyperV guest networking ..."
@@ -76,6 +72,8 @@ task raspberry.surf_net_down -Description "Decomission raspberry guest (rpi)" -d
     PSHyperVLabNet\RemoveFromHosts -Hostname "raspberry.surf"
 }
 
+### linfra
+
 task linfra.surf_net_up -Description "Configure linfra guest (Ubuntu22.04)" -depends ensure-imported, ensure-vswitches {
     Write-Host "Will now configure linfra.surf HyperV guest networking ..."
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
@@ -97,6 +95,24 @@ task linfra.surf_net_down -Description "Decomission linfra guest (Ubuntu22.04)" 
     PSHyperVLabNet\RemoveFromHosts -Hostname "linfra.surf"
 }
 
+task linfra.surf_vagrant_up -Description "Create linfra guest (Ubuntu22.04) from vagrant box" -depends ensure-imported {
+    Write-Host "Will now create the linfra (Ubuntu22.04) HyperV guest as stated in the Vagrantfile ..."
+    PSHyperVLabNet\Run-Vagrant_Up -ServerName "linfra"
+}
+
+task linfra.surf_vagrant_down -Description "Destroy linfra guest (Ubuntu22.04) using vagrant executable" -depends ensure-imported {
+    Write-Host "Will now remove the linfra (Ubuntu22.04) HyperV guest VM files ..."
+    PSHyperVLabNet\Run-Vagrant_Destroy -ServerName "linfra"
+}
+
+task linfra.surf_up -depends ensure-imported, linfra.surf_vagrant_up, linfra.surf_net_up{
+    PSHyperVLabNet\Start-VM "Ubuntu22.04"
+}
+
+task linfra.surf_down -depends ensure-imported, linfra.surf_net_down, linfra.surf_vagrant_down
+
+### hv
+
 task hv.surf_net_up -Description "Configure hv guest (HyperVSrv2019)" -depends ensure-imported, ensure-vswitches {
     Write-Host "Will now configure hv.surf HyperV guest networking ..."
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "HyperVSrv2019" -SwitchName "BrotlyNet_host"
@@ -117,6 +133,8 @@ task hv.surf_net_down -Description "Decomission hv guest (HyperVSrv2019)" -depen
     PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "HyperVSrv2019" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\RemoveFromHosts -Hostname "hv.surf"
 }
+
+### pfs
 
 task pfs.surf_net_up -Description "Configure pfs guest (pfSense)" -depends ensure-imported, ensure-vswitches {
     Write-Host "Will now configure pfs.surf HyperV guest networking ..."
@@ -141,6 +159,16 @@ task pfs.surf_net_down -Description "Decomission pfs guest (pfSense)" -depends e
 
     PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "pfSense" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\RemoveFromHosts -Hostname "pfs.surf"
+}
+
+task remove-vswitches -description "Remove all switches created for BrotlyNet" `
+    -depends winfra.surf_net_down, raspberry.surf_net_down, linfra.surf_net_down, hv.surf_net_down, pfs.surf_net_down {
+        PSHyperVLabNet\Remove-VMSwitch -SwitchName "BrotlyNet_host"
+        PSHyperVLabNet\Remove-VMSwitch -SwitchName "BrotlyNet_pf2vm"
+    }
+
+task network_down -Description "Ensure PSHyperVLabNet (and SHELevate) are not present on the machine" -depends book.surf_net_down {
+    Remove-Module PSHyperVLabNet -ErrorAction Continue
 }
 
 task network_up -Description "Set up networking for VMs in the lab" `
