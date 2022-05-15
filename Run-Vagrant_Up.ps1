@@ -14,8 +14,8 @@ function PSHyperVLabNet\Run-Vagrant_Up($ServerName){
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -timeoutSec 300 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     Write-Host "Executed. Retrieving result"
-    $RestartOpenDHCPServer_out = Get-Content "$PSScriptRoot\shell\VagrantUp.PSSerialized"
-    $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($RestartOpenDHCPServer_out)
+    $RunVagrantUp_out = Get-Content "$PSScriptRoot\shell\VagrantUp.PSSerialized"
+    $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($RunVagrantUp_out)
     $SHElevate?
 }
 

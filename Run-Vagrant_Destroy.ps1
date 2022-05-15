@@ -14,8 +14,8 @@ function PSHyperVLabNet\Run-Vagrant_Destroy($ServerName){
     $encodedCommand = Encode-Text-b64 -Text $scriptBlockToInject
     & $PSScriptRoot\execute-NoUAC-shell.ps1 -timeoutSec 120 -codeStringToInject "pwsh -WorkingDirectory '$PSScriptRoot\shell\' -EncodedCommand $encodedCommand"
     Write-Host "Executed. Retrieving result"
-    $RestartOpenDHCPServer_out = Get-Content "$PSScriptRoot\shell\VagrantDestroy.PSSerialized"
-    $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($RestartOpenDHCPServer_out)
+    $RunVagrantDestroy_out = Get-Content "$PSScriptRoot\shell\VagrantDestroy.PSSerialized"
+    $SHElevate? =[System.Management.Automation.PSSerializer]::Deserialize($RunVagrantDestroy_out)
     $SHElevate?
 }
 
