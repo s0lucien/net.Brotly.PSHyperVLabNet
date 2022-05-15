@@ -105,11 +105,15 @@ task linfra.surf_vagrant_down -Description "Destroy linfra guest (Ubuntu22.04) u
     PSHyperVLabNet\Run-Vagrant_Destroy -ServerName "linfra"
 }
 
-task linfra.surf_up -depends ensure-imported, linfra.surf_vagrant_up, linfra.surf_net_up{
+task linfra.surf_up -depends ensure-imported,  linfra.surf_vagrant_up, linfra.surf_net_up{
     PSHyperVLabNet\Start-VM "Ubuntu22.04"
 }
 
-task linfra.surf_down -depends ensure-imported, linfra.surf_net_down, linfra.surf_vagrant_down
+task linfra.surf_turnoff -depends ensure-imported {
+    PSHyperVLabNet\Stop-VM "Ubuntu22.04"
+}
+
+task linfra.surf_down -depends ensure-imported, linfra.surf_turnoff, linfra.surf_net_down, linfra.surf_vagrant_down
 
 ### hv
 
