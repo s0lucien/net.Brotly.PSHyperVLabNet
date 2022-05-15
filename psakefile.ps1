@@ -16,9 +16,9 @@ task ensure-vswitches -description "Ensure virtual switches necessary to BrotlyN
 
 task remove-vswitches -description "Remove all switches created for BrotlyNet" `
     -depends winfra.surf_down, raspberry.surf_down, linfra.surf_down, hv.surf_down, pfs.surf_down {
-        PSHyperVLabNet\Remove-VMSwitch -name "vagrant_dummy"
-        PSHyperVLabNet\Remove-VMSwitch -name "BrotlyNet_host"
-        PSHyperVLabNet\Remove-VMSwitch -name "BrotlyNet_pf2vm"
+        PSHyperVLabNet\Remove-VMSwitch -SwitchName "vagrant_dummy"
+        PSHyperVLabNet\Remove-VMSwitch -SwitchName "BrotlyNet_host"
+        PSHyperVLabNet\Remove-VMSwitch -SwitchName "BrotlyNet_pf2vm"
     }
 
 task book.surf_up -Description "Configure HyperV host (ltisurfbook)" -depends ensure-imported, ensure-vswitches {
