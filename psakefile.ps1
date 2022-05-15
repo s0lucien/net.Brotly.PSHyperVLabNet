@@ -118,8 +118,8 @@ task hv.surf_net_down -Description "Decomission hv guest (HyperVSrv2019)" -depen
     PSHyperVLabNet\RemoveFromHosts -Hostname "hv.surf"
 }
 
-task pfs.surf_net_up -Description "Configure pf guest (pfSense)" -depends ensure-imported, ensure-vswitches {
-    Write-Host "Will now configure pfsense.surf HyperV guest networking ..."
+task pfs.surf_net_up -Description "Configure pfs guest (pfSense)" -depends ensure-imported, ensure-vswitches {
+    Write-Host "Will now configure pfs.surf HyperV guest networking ..."
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
     PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
@@ -131,7 +131,7 @@ task pfs.surf_net_up -Description "Configure pf guest (pfSense)" -depends ensure
 }
 
 task pfs.surf_net_down -Description "Decomission pfs guest (pfSense)" -depends ensure-imported {
-    Write-Host "Will now remove pfsense.surf HyperV guest networking ..."
+    Write-Host "Will now remove pfs.surf HyperV guest networking ..."
     PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
     PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
