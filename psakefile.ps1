@@ -9,14 +9,12 @@ task ensure-removed -Description "Ensure PSHyperVLabNet (and SHELevate) are not 
 }
 
 task ensure-vswitches -description "Ensure virtual switches necessary to BrotlyNet are created" -depends ensure-imported {
-    PSHyperVLabNet\New-VMSwitch -SwitchName "vagrant_dummy" -SwitchType "Internal"
     PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_host" -SwitchType "Internal"
     PSHyperVLabNet\New-VMSwitch -SwitchName "BrotlyNet_pf2vm" -SwitchType "Private"
 }
 
 task remove-vswitches -description "Remove all switches created for BrotlyNet" `
     -depends winfra.surf_down, raspberry.surf_down, linfra.surf_down, hv.surf_down, pfs.surf_down {
-        PSHyperVLabNet\Remove-VMSwitch -SwitchName "vagrant_dummy"
         PSHyperVLabNet\Remove-VMSwitch -SwitchName "BrotlyNet_host"
         PSHyperVLabNet\Remove-VMSwitch -SwitchName "BrotlyNet_pf2vm"
     }
@@ -129,7 +127,7 @@ task pfs.surf_up -Description "Configure pf guest (pfSense)" -depends ensure-imp
     PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "BrotlyNet_pf2vm"
     PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "pfSense" -SwitchName "Default Switch"
     PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "pfSense" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.1"
-    PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.1" -Hostname "pfsense.surf"
+    PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.1" -Hostname "pfs.surf"
 }
 
 task pfs.surf_down -Description "Decomission pfs guest (pfSense)" -depends ensure-imported {
@@ -144,6 +142,9 @@ task pfs.surf_down -Description "Decomission pfs guest (pfSense)" -depends ensur
     PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "pfSense" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\RemoveFromHosts -Hostname "pfs.surf"
 }
+
+task network_up -Description "Set up networking for VMs in the lab" `
+    -depends book.surf_up, pfs.surf_up, hv.surf_up, linfra.surf_up, winfra.surf_up, raspberry.surf_up
 
 task test-cmd -depends ensure-imported {
     PSHyperVLabNet\Uninstall-InternalSwitch_HostFirewall -RuleName "BrotlyNet_host"
