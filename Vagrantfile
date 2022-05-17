@@ -8,6 +8,9 @@ Vagrant.configure("2") do |config|
           hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
           hv.ip_address_timeout=300
           hv.memory = 2048
+          #https://docs.microsoft.com/en-us/virtualization/community/team-blog/2017/20170706-vagrant-and-hyper-v-tips-and-tricks
+          hv.enable_virtualization_extensions = true
+          hv.linked_clone = true
         end
     end
 
@@ -19,6 +22,8 @@ Vagrant.configure("2") do |config|
         hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
         hv.ip_address_timeout=300
         hv.memory = 2048
+        hv.enable_virtualization_extensions = true
+        hv.linked_clone = true
         end
     end
 
@@ -30,6 +35,8 @@ Vagrant.configure("2") do |config|
         hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
         hv.ip_address_timeout=300
         hv.memory = 4096
+        hv.enable_virtualization_extensions = true
+        hv.linked_clone = true
         end
     end
   end

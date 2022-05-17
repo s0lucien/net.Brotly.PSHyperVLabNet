@@ -49,6 +49,27 @@ task winfra.surf_net_down -Description "Decomission winfra guest (WinSrv2022)" -
     PSHyperVLabNet\RemoveFromHosts -Hostname "winfra.surf"
 }
 
+task winfra.surf_vagrant_up -Description "Create winfra guest (WinSrv2022) from vagrant box" -depends ensure-imported {
+    Write-Host "Will now create the winfra (WinSrv2022) HyperV guest as stated in the Vagrantfile ..."
+    PSHyperVLabNet\Run-Vagrant_Up -ServerName "winfra"
+    PSHyperVLabNet\Remove-AllVMNetworkAdapters -VMName "WinSrv2022"
+}
+
+task winfra.surf_vagrant_down -Description "Destroy winfra guest (WinSrv2022) using vagrant executable" -depends ensure-imported {
+    Write-Host "Will now remove the winfra (WinSrv2022) HyperV guest VM files ..."
+    PSHyperVLabNet\Run-Vagrant_Destroy -ServerName "winfra"
+}
+
+task winfra.surf_up -depends ensure-imported,  winfra.surf_vagrant_up, winfra.surf_net_up{
+    PSHyperVLabNet\Start-VM "WinSrv2022"
+}
+
+task winfra.surf_turnoff -depends ensure-imported {
+    PSHyperVLabNet\Stop-VM "WinSrv2022"
+}
+
+task winfra.surf_down -depends ensure-imported, winfra.surf_turnoff, winfra.surf_net_down, winfra.surf_vagrant_down
+
 ### raspberry
 
 task raspberry.surf_net_up -Description "Configure raspberry guest (rpi)" -depends ensure-imported, ensure-vswitches {
@@ -138,6 +159,27 @@ task hv.surf_net_down -Description "Decomission hv guest (HyperVSrv2019)" -depen
     PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "HyperVSrv2019" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\RemoveFromHosts -Hostname "hv.surf"
 }
+
+task hv.surf_vagrant_up -Description "Create hv guest (HyperVSrv2019) from vagrant box" -depends ensure-imported {
+    Write-Host "Will now create the hv (HyperVSrv2019) HyperV guest as stated in the Vagrantfile ..."
+    PSHyperVLabNet\Run-Vagrant_Up -ServerName "hv"
+    PSHyperVLabNet\Remove-AllVMNetworkAdapters -VMName "HyperVSrv2019"
+}
+
+task hv.surf_vagrant_down -Description "Destroy hv guest (HyperVSrv2019) using vagrant executable" -depends ensure-imported {
+    Write-Host "Will now remove the hv (HyperVSrv2019) HyperV guest VM files ..."
+    PSHyperVLabNet\Run-Vagrant_Destroy -ServerName "hv"
+}
+
+task hv.surf_up -depends ensure-imported,  hv.surf_vagrant_up, hv.surf_net_up{
+    PSHyperVLabNet\Start-VM "HyperVSrv2019"
+}
+
+task hv.surf_turnoff -depends ensure-imported {
+    PSHyperVLabNet\Stop-VM "HyperVSrv2019"
+}
+
+task hv.surf_down -depends ensure-imported, hv.surf_turnoff, hv.surf_net_down, hv.surf_vagrant_down
 
 ### pfs
 
