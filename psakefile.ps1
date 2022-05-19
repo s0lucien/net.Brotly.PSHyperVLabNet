@@ -95,44 +95,44 @@ task raspberry.surf_net_down -Description "Decomission raspberry guest (rpi)" -d
 
 ### linfra
 
-task linfra.surf_net_up -Description "Configure linfra guest (Ubuntu20.04.4)" -depends ensure-imported, ensure-vswitches {
+task linfra.surf_net_up -Description "Configure linfra guest (Ubuntu22.04)" -depends ensure-imported, ensure-vswitches {
     Write-Host "Will now configure linfra.surf HyperV guest networking ..."
-    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_host"
-    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_pf2vm"
-    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_host"
-    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_pf2vm"
-    PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.141"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Add-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Connect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\Set-InternalSwitch_GuestDHCP_IP -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host" -IPAddress "10.10.80.141"
     PSHyperVLabNet\AddToHosts -DesiredIP "10.10.80.141" -Hostname "linfra.surf"
 }
 
-task linfra.surf_net_down -Description "Decomission linfra guest (Ubuntu20.04.4)" -depends ensure-imported {
+task linfra.surf_net_down -Description "Decomission linfra guest (Ubuntu22.04)" -depends ensure-imported {
     Write-Host "Will now remove linfra.surf HyperV guest networking ..."
-    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_host"
-    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_pf2vm"
-    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_host"
-    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Disconnect-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_pf2vm"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\PSHyperVLabNet\Remove-VMNetworkAdapter -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_pf2vm"
 
-    PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "Ubuntu20.04.4" -SwitchName "BrotlyNet_host"
+    PSHyperVLabNet\Unset-InternalSwitch_GuestDHCP_IP -VMName "Ubuntu22.04" -SwitchName "BrotlyNet_host"
     PSHyperVLabNet\RemoveFromHosts -Hostname "linfra.surf"
 }
 
-task linfra.surf_vagrant_up -Description "Create linfra guest (Ubuntu20.04.4) from vagrant box" -depends ensure-imported {
-    Write-Host "Will now create the linfra (Ubuntu20.04.4) HyperV guest as stated in the Vagrantfile ..."
+task linfra.surf_vagrant_up -Description "Create linfra guest (Ubuntu22.04) from vagrant box" -depends ensure-imported {
+    Write-Host "Will now create the linfra (Ubuntu22.04) HyperV guest as stated in the Vagrantfile ..."
     PSHyperVLabNet\Run-Vagrant_Up -ServerName "linfra"
-    PSHyperVLabNet\Remove-AllVMNetworkAdapters -VMName "Ubuntu20.04.4"
+    PSHyperVLabNet\Remove-AllVMNetworkAdapters -VMName "Ubuntu22.04"
 }
 
-task linfra.surf_vagrant_down -Description "Destroy linfra guest (Ubuntu20.04.4) using vagrant executable" -depends ensure-imported {
-    Write-Host "Will now remove the linfra (Ubuntu20.04.4) HyperV guest VM files ..."
+task linfra.surf_vagrant_down -Description "Destroy linfra guest (Ubuntu22.04) using vagrant executable" -depends ensure-imported {
+    Write-Host "Will now remove the linfra (Ubuntu22.04) HyperV guest VM files ..."
     PSHyperVLabNet\Run-Vagrant_Destroy -ServerName "linfra"
 }
 
 task linfra.surf_up -depends ensure-imported,  linfra.surf_vagrant_up, linfra.surf_net_up{
-    PSHyperVLabNet\Start-VM "Ubuntu20.04.4"
+    PSHyperVLabNet\Start-VM "Ubuntu22.04"
 }
 
 task linfra.surf_turnoff -depends ensure-imported {
-    PSHyperVLabNet\Stop-VM "Ubuntu20.04.4"
+    PSHyperVLabNet\Stop-VM "Ubuntu22.04"
 }
 
 task linfra.surf_down -depends ensure-imported, linfra.surf_turnoff, linfra.surf_net_down, linfra.surf_vagrant_down
