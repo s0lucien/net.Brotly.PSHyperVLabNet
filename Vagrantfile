@@ -7,7 +7,8 @@ Vagrant.configure("2") do |config|
           hv.vmname = "Ubuntu22.04"
           hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
           hv.ip_address_timeout=300
-          hv.memory = 2048
+          hv.maxmemory = 2048
+          hv.memory = 1024
           #https://docs.microsoft.com/en-us/virtualization/community/team-blog/2017/20170706-vagrant-and-hyper-v-tips-and-tricks
           hv.enable_virtualization_extensions = true
           hv.linked_clone = true
@@ -21,7 +22,8 @@ Vagrant.configure("2") do |config|
         hv.vmname = "WinSrv2022"
         hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
         hv.ip_address_timeout=300
-        hv.memory = 2048
+        hv.maxmemory = 2048
+        hv.memory = 1024
         hv.enable_virtualization_extensions = true
         hv.linked_clone = true
         end
@@ -34,7 +36,8 @@ Vagrant.configure("2") do |config|
         hv.vmname = "HyperVSrv2019"
         hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
         hv.ip_address_timeout=300
-        hv.memory = 4096
+        hv.maxmemory = 4096
+        hv.memory = 1024
         hv.enable_virtualization_extensions = true
         hv.linked_clone = true
         end
