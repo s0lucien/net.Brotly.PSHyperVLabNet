@@ -4,7 +4,7 @@ Vagrant.configure("2") do |config|
         node.vm.box = "brotly/Ubuntu22.04"
 
         node.vm.provider "hyperv" do |hv|
-          hv.vmname = "Ubuntu22.04"
+          hv.vmname = "linfra"
           hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
           hv.ip_address_timeout=300
           hv.maxmemory = 2048
@@ -19,7 +19,7 @@ Vagrant.configure("2") do |config|
       node.vm.box = "brotly/WinSrv2022"
 
       node.vm.provider "hyperv" do |hv|
-        hv.vmname = "WinSrv2022"
+        hv.vmname = "winfra"
         hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
         hv.ip_address_timeout=300
         hv.maxmemory = 2048
@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
       node.vm.box = "brotly/HyperVSrv2019"
 
       node.vm.provider "hyperv" do |hv|
-        hv.vmname = "HyperVSrv2019"
+        hv.vmname = "hv"
         hv.cpus = `powershell.exe -Command "$(Get-WmiObject -class Win32_processor | select NumberOfLogicalProcessors).NumberOfLogicalProcessors"`
         hv.ip_address_timeout=300
         hv.maxmemory = 2048
